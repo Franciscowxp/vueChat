@@ -1,0 +1,62 @@
+%divInput {
+    height: 0.8rem;
+    line-height: 0.8rem;
+    transition: all 0.2s ease;
+    display: flex;
+    box-sizing: border-box;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+
+    &.error{
+        box-shadow: 0 0 1 2 #fc6632;
+    }
+
+    svg {
+        flex: 0 0 auto;
+        fill: #999;
+        width: 0.533333rem;
+        margin-right: 0.666667rem;
+        display:block;
+    }
+
+    input {
+        flex: 1 1 auto;
+        @include fs(12);
+        display:block;
+        border: none;
+        color: #999;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 0.266667rem 0;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid currentColor;
+
+        &:focus {
+            color: #333;
+            border-bottom: 1px solid currentColor;
+        }
+        &.invalid.touched {
+            color:#fc6632;
+            border-color:#fc6632;
+        }
+    }
+}
+
+%input {
+    line-height: 1.253333rem;
+    height: 1.28rem;
+    border: 1px solid #d1d1d1;
+    border-radius: 0.053333rem;
+    transition: all .2s ease;
+    padding: 0 0.213333rem;
+    box-sizing:border-box;
+    @include fs(14);
+
+    color: #999;
+
+    &:focus {
+        color: #666;
+        border-color: #999;
+    }
+}

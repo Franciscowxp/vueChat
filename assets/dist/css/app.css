@@ -1,0 +1,34 @@
+html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, menu, nav, section, time, mark, audio, video, details, summary {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: normal;
+  vertical-align: baseline;
+  background: transparent; }
+
+article, aside, figure, footer, header, nav, section, details, summary {
+  display: block; }
+
+html {
+  box-sizing: border-box; }
+
+ul {
+  list-style: none; }
+
+button, input, select, textarea {
+  margin: 0; }
+
+button, input[type="reset"], input[type="button"], input[type="submit"] {
+  line-height: normal !important;
+  outline: none; }
+
+a {
+  text-decoration: none; }
+
+input {
+  outline: none; }
+
+button::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner {
+  border: none;
+  padding: 0; }

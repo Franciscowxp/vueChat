@@ -1,0 +1,34 @@
+@mixin dprpx($name, $num){
+    #{$name}: $num * 1px;
+    [data-dpr="2"] & {
+        #{$name}: $num * 2px;
+    }
+    // for mx3
+    [data-dpr="2.5"] & {
+        #{$name}: $num * 2.5px;
+    }
+    [data-dpr^="2.6"] & {
+        #{$name}: $num * 2.6px;
+    }
+    // for 小米note
+    [data-dpr="2.75"] & {
+        #{$name}: $num * 2.75px;
+    }
+    [data-dpr="3"] & {
+        #{$name}: $num * 3px;
+    }
+    [data-dpr^="3.2"] & {
+        #{$name}: $num * 3.3px;
+    }
+    [data-dpr^="3.5"] & {
+        #{$name}: $num * 3.5px;
+    }
+    // for 三星note4
+    [data-dpr="4"] & {
+        #{$name}: $num * 4px;
+    }
+}
+
+@mixin fs($size) {
+    @include dprpx(font-size,$size);
+}
