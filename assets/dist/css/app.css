@@ -32,3 +32,16 @@ button::-moz-focus-inner,
 input[type="button"]::-moz-focus-inner {
   border: none;
   padding: 0; }
+
+@font-face {
+  font-family: 'Lato-Regular';
+  src: url(/assets/dist/fonts/Lato-Regular.eot?#iefix) format("embedded-opentype"), url(/assets/dist/fonts/Lato-Regular.woff) format("woff"), url(/assets/dist/fonts/Lato-Regular.ttf) format("truetype"), url(/assets/dist/fonts/Lato-Regular.svg#Lato-Regular) format("svg");
+  font-weight: normal;
+  font-style: normal; }
+
+#app {
+  height: 100vh;
+  font-family: 'Lato-Regular';
+  color: #b6bfc9; }
+  #app > article {
+    height: 100%; }

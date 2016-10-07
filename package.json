@@ -31,6 +31,7 @@
     "gulp-autoprefixer": "^3.1.0",
     "gulp-debug": "^2.1.2",
     "gulp-load-plugins": "^1.2.4",
+    "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.3.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-svg-symbols": "^1.0.0",

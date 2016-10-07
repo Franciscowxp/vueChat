@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <router-link to="/dash">dash</router-link>
         <router-view></router-view>
     </div>
 </template>
