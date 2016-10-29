@@ -1,6 +1,6 @@
-const getCartNum = (state) => {
-    return state.cartNum;
+const getUser = (state) => {
+    return state.user;
 };
-export {
-    getCartNum
+export default {
+    getUser
 }

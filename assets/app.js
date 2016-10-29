@@ -2,8 +2,8 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 import routes from './route/routes';
-import store from './store/index';
 import App from './App.vue';
+import store from 'store/index';
 
 import 'sass/pages/index.scss';
 Vue.use(VueResource);

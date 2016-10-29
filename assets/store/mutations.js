@@ -1,6 +1,6 @@
 const mutations = {
-    CARTNUM(state, num) {
-        state.cartNum = num;
+    USER(state, obj) {
+        state.user = obj;
     }
 };
 

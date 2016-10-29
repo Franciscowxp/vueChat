@@ -3,17 +3,70 @@
 
 @font-face {
     font-family: 'Lato-Regular';
-    src: url("../../fonts/Lato-Regular.eot?#iefix") format("embedded-opentype"), 
-    url("../../fonts/Lato-Regular.woff") format("woff"), 
-    url("../../fonts/Lato-Regular.ttf") format("truetype"), 
-    url("../../fonts/Lato-Regular.svg#Lato-Regular") format("svg");
+    src: url("../../fonts/Lato-Regular.eot?#iefix") format("embedded-opentype"), url("../../fonts/Lato-Regular.woff") format("woff"), url("../../fonts/Lato-Regular.ttf") format("truetype"), url("../../fonts/Lato-Regular.svg#Lato-Regular") format("svg");
     font-weight: normal;
     font-style: normal;
+}
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter, .fade-leave-active {
+    opacity: 0;
+}
+
+.flipIn-enter-active, .flipIn-leave-active {
+    transition: all 0.5s;
+}
+
+.flipIn-enter, .flipIn-leave-active {
+    opacity: 0;
+    transform:translateX(-50px);
+    &.owner {
+      transform:translateX(50px);
+    }
+}
+
+.flip-enter-active {
+    animation: flipInY 2s;
+}
+.flip-leave-active {
+    // animation: bounce-out .5s;
+}
+.flip-enter {
+    background: red!important;
+}
+
+@keyframes flipInY {
+  from {
+    transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+
+  40% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+    animation-timing-function: ease-in;
+  }
+
+  60% {
+    transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+    opacity: 1;
+  }
+
+  80% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
+  }
+
+  to {
+    transform: perspective(400px);
+  }
 }
 
 #app {
     height: 100vh;
     font-family: 'Lato-Regular';
+
     > article {
         height: 100%;
     }

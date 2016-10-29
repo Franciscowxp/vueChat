@@ -30,12 +30,13 @@
                 </div>
             </header>
             <div>
-                
+                <v-dialog></v-dialog>
             </div>
         </section>
     </article>
 </template>
 <script>
+    import vDialog from 'components/dialog';
     export default {
         data() {
             return {
@@ -58,8 +59,11 @@
                 currentUser: {
                     avatar: 'man-1',
                     name: 'francisco'
-                }
+                },
             };
+        },
+        components: {
+            vDialog
         }
     }
 </script>
@@ -98,6 +102,8 @@
             justify-content:flex-end;
             align-items:stretch;
             padding:0 20px;
+            position: relative;
+            z-index: 2;
             .avatar {
                 width:50px;
                 height:50px;
@@ -119,6 +125,8 @@
             width:200px;
             background:#2b2c31;
             box-shadow:2px 0 2px #28292d;
+            position: relative;
+            z-index: 2;
             ul {
                 padding:0 20px;
             }
@@ -167,8 +175,20 @@
             flex-flow:column nowrap;
             justify-content:space-between;
             align-items:stretch;
+            position: relative;
+            z-index: 1;
             >div {
                 flex: 1 1 auto;
+                display:flex;
+                flex-flow:row nowrap;
+                justify-content:space-between;
+                align-items:stretch;
+                padding: 20px;
+                transform-style:preserve-3d;
+                perspective:4000px;
+                overflow:hidden;
+                height:calc(100vh - 70px);
+                box-sizing: border-box;
             }
         }
     }

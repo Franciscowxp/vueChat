@@ -1,7 +1,7 @@
-const cartNumAct = ({dispatch, state},num) => {
-    dispatch('CARTNUM', num);
+const userAct = ({dispatch, state},obj) => {
+    dispatch('USER', obj);
 };
 
-export {
-    cartNumAct
+export default {
+    userAct
 };

@@ -1,0 +1,23 @@
+[{
+        "owner": "wxp",
+        "receiver": "other",
+        "timestamp": 36000,
+        "detail": "this is test message from wxp to other 1"
+    }, {
+        "owner": "wxp",
+        "receiver": "other",
+        "timestamp": 36000,
+        "detail": "this is test message from wxp to other 2"
+    }, {
+        "owner": "wxp",
+        "receiver": "other",
+        "timestamp": 36000,
+        "detail": "this is test message from wxp to other 3"
+    }, {
+        "owner": "bone",
+        "receiver": "other",
+        "timestamp": 36000,
+        "detail": "this is test message from bone to other"
+    }
+
+]

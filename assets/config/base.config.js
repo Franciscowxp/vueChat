@@ -40,10 +40,16 @@ module.exports = {
             {
                 test: /\.(png|jpg|gif)$/,
                 loader: 'url-loader?limit=8192&name=imgs/[name].[ext]'
-            }, {
+            },
+            {
                 test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
                 loader: 'file-loader?limit=8192&name=fonts/[name].[ext]'
 
+            },
+            {
+                test: /\.json$/,
+                loader:'json',
+                exclude: /node_modules/
             }
             //html模板编译？
             // { test: /\.(html|tpl)$/, loader: 'html-loader' },
@@ -73,13 +79,13 @@ module.exports = {
     resolve: {
         modules: [path.join(__dirname, '../js'), 'node_modules'],
         // require时省略的扩展名，如：require('module') 不需要module.js
-        extensions: ['.js', '.vue', '.scss', '.sass'],
+        extensions: ['.js', '.vue', '.scss', '.sass', '.json'],
         // 别名，可以直接使用别名来代表设定的路径以及其他
         alias: {
             components: path.join(__dirname, '../components'),
             modules: path.join(__dirname, '../modules'),
             store: path.join(__dirname, '../store'),
-            data: path.join(__dirname, '../static/json/'),
+            mock: path.join(__dirname, '../mock/'),
             sass: path.join(__dirname, '../static/sass'),
             fonts: path.join(__dirname, '../static/fonts'),
             images: path.join(__dirname, '../static/images')
