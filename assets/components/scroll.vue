@@ -1,13 +1,13 @@
 <template>
     <section class="components-scroll"
     :style="{height:height,width:width}"
-    @mousewheel="mousewheel($event)">
-        <div class="scroll-contain" :style="scrollStyle">
+    @mousewheel="mousewheel($event)" >
+        <div class="scroll-contain" :style="scrollContentStyle">
             <slot>
             </slot>
         </div>
-        <div class="scroll-bar" :class="[isShowScrollBar ? 'active': '']">
-            <div :style="scrollBarStyle" @mousedown="dragScrollStart" @mouseup="dragScrollEnd" @mousemove="dragScrollMove"></div>
+        <div class="scroll-bar" @click="clickScrollBarMove($event)" :class="[isShowScrollBar ? 'active': '']">
+            <div :style="scrollBarStyle" ></div>
         </div>
     </section>
 </template>
@@ -15,18 +15,18 @@
     export default {
         data() {
             return {
-                scrollStyle: {
+                scrollContentStyle: {
                     transform: 'translateY(0)'
                 },
                 scrollBarStyle: {
                     height: '100%',
                     transform: 'translateY(0)'
                 },
-                actualW: 0,
-                actualH: 0,
-                containH: 0,
-                offsetH:0,
-                dataChange: false,
+                containWidth: 0,
+                containHeight: 0,
+                scrollContentHeight: 0,
+                offsetScrollContentH:0,
+                offsetScrollBarH:0,
                 isShowScrollBar:false,
                 scrollBarHandler: null,
                 scrollBarHeight: 0,
@@ -43,44 +43,67 @@
             }
         },
         methods: {
-            dragScrollEnd(){
-
-            },
-            dragScrollStart(){
-
-            },
-            dragScrollMove(){
-
+            clickScrollBarMove(event){
+                let barOffsetY = this.getScrollBarInfo().distance;
+                if(event.target.classList.contains('scroll-bar')) {
+                    let offset = event.layerY > barOffsetY ? event.layerY - this.scrollBarHeight : event.layerY;
+                    this.contentMoveByBar(-offset);
+                    this.dragScrollBarMove(offset);
+                }
             },
             mousewheel(event) {
                 let direction = 'up';
-                let distence = this.getCurrentTranslate();
+                let distance = this.getScrollContentInfo().distance;
                 let offset = 20;
                 if(event.wheelDelta < 0) {
                     direction = 'down';
                 }
                 if(direction === 'up') {
-                    let offsetY = Number.parseInt(distence,10) + offset < 0 ? Number.parseInt(distence,10) + offset : 0;
-                    if(distence < 0) {
-                        this.scrollStyle.transform = 'translateY(' + offsetY +'px)';
-                        this.scrollBarMove(offsetY);
+                    let offsetY =distance + offset < 0 ? distance + offset : 0;
+                    if(distance < 0) {
+                        this.BarMoveByContent(-offsetY);
+                        this.moveScrollContent(offsetY);
                     }
                 }
                 if(direction === 'down') {
-                    let offsetY = Number.parseInt(distence,10) - offset > this.offsetH ? Number.parseInt(distence,10) - offset : this.offsetH;
-                    if(distence > this.offsetH) {
-                        this.scrollStyle.transform = 'translateY(' + offsetY +'px)';
-                        this.scrollBarMove(offsetY);
+                    let offsetY = distance - offset > this.offsetScrollContentH ? distance - offset : this.offsetScrollContentH;
+                    if(distance > this.offsetScrollContentH) {
+                        this.BarMoveByContent(-offsetY);
+                        this.moveScrollContent(offsetY);
                     }
                 }
                 this.scrollBarAction();
             },
-            getCurrentTranslate(){
-                let result = /(\-?\d+)(px)?/.exec(this.scrollStyle.transform);
-                return result[1];
+            getScrollContentInfo(){
+                let result = /(\-?\d+)(px)?/.exec(this.scrollContentStyle.transform);
+                return {
+                    distance:Number.parseInt(result[1],10),
+                    height: this.scrollContentHeight
+                };
+            },
+            getScrollBarInfo() {
+                let result = /(\-?\d+)(px)?/.exec(this.scrollBarStyle.transform);
+                return {
+                    distance:Number.parseInt(result[1],10),
+                    height:this.scrollBarHeight
+                }
             },
             updateContainRect() {
-                this.containH = this.$el.querySelector('.scroll-contain').clientHeight;
+                this.scrollContentHeight = this.$el.querySelector('.scroll-contain').clientHeight;
+            },
+            dragScrollBarMove(num) {
+                let actualNum = num;
+                if(num <= 0) {
+                    actualNum = 0;
+                }
+                if(num >= (this.containHeight - this.scrollBarHeight)) {
+                    actualNum = this.containHeight - this.scrollBarHeight;
+                }
+                this.scrollBarStyle.transform = 'translateY(' + actualNum +'px)';
+
+            },
+            moveScrollContent(num){
+                this.scrollContentStyle.transform = 'translateY(' + num +'px)';
             },
             scrollBarAction() {
                 this.isShowScrollBar = true;
@@ -92,38 +115,44 @@
                 }, 2000);
             },
             calculateBar() {
-                let height = Math.pow(this.actualH,2) / this.containH;
+                let height = Math.pow(this.containHeight,2) / this.scrollContentHeight;
                 let finalHeight = height <= 20 ? 20 : height;
                 this.scrollBarHeight = finalHeight;
                 this.scrollBarStyle.height =  finalHeight + 'px';
+                this.offsetScrollBarH = this.scrollContentHeight - this.scrollBarHeight;
             },
-            scrollBarMove(offset) {
+            contentMoveByBar(offset) {
+                let h = 0;
+                h = offset * this.scrollContentHeight / this.containHeight;
+                this.scrollContentStyle.transform = `translateY(${h}px)`;
+            },
+            BarMoveByContent(offset) {
                 let h = 0;
                 if(offset !== undefined) {
-                    h = offset / this.containH * this.actualH;
+                    h = offset / this.scrollContentHeight * this.containHeight;
                 } else {
-                    h = this.scrollBarHeight - this.actualH;
+                    h = this.containHeight - this.scrollBarHeight;
                 }
-                this.scrollBarStyle.transform = `translateY(${-h}px)`;
+                this.scrollBarStyle.transform = `translateY(${h}px)`;
             },
             updateStyle(){
                 this.$nextTick(() => {
                     this.updateContainRect();
-                    if(this.containH > this.actualH) {
-                        this.scrollStyle = {
-                            transform: 'translateY(' + (this.actualH - this.containH) + 'px)'
+                    if(this.scrollContentHeight > this.containHeight) {
+                        this.scrollContentStyle = {
+                            transform: 'translateY(' + (this.containHeight - this.scrollContentHeight) + 'px)'
                         }
-                        this.offsetH = this.actualH - this.containH;
+                        this.offsetScrollContentH = this.containHeight - this.scrollContentHeight;
                         this.scrollBarAction();
                         this.calculateBar();
-                        this.scrollBarMove();
+                        this.BarMoveByContent();
                     }
                 })
             }
         },
         mounted() {
-            this.actualW = this.$el.clientWidth;
-            this.actualH = this.$el.clientHeight;
+            this.containWidth = this.$el.clientWidth;
+            this.containHeight = this.$el.clientHeight;
             this.updateContainRect();
         }
     }
@@ -156,7 +185,7 @@
             border-radius: 10px;
             transition: transform 0.2s ease-in-out;
             will-change:transform;
-            cursor: move;
+            // cursor: move;
         }
         &.active,&:hover {
             opacity: 1;
