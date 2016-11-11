@@ -1,10 +1,12 @@
 <template>
     <section class="components-scroll"
-    :style="{height:height,width:width}"
+    :style="componentRectStyle"
     @mousewheel="mousewheel($event)" >
-        <div class="scroll-contain" :style="scrollContentStyle">
-            <slot>
-            </slot>
+        <div class="scroll-overflow">
+            <div class="scroll-contain" :style="scrollContentStyle">
+                <slot>
+                </slot>
+            </div>
         </div>
         <div class="scroll-bar" @click="clickScrollBarMove($event)" :class="[isShowScrollBar ? 'active': '']">
             <div :style="scrollBarStyle" ></div>
@@ -22,6 +24,10 @@
                     height: '100%',
                     transform: 'translateY(0)'
                 },
+                componentRectStyle: {
+                    height: '100%',
+                    width: '100%'
+                },
                 containWidth: 0,
                 containHeight: 0,
                 scrollContentHeight: 0,
@@ -30,16 +36,18 @@
                 isShowScrollBar:false,
                 scrollBarHandler: null,
                 scrollBarHeight: 0,
+                scrollContentOffsetTop:0 // 滚动内容最上边相对于固定容器最上边的距离
+
             };
         },
         props: {
             height:{
                 type:String,
-                default:'100%'
+                default:''
             },
             width:{
                 type:String,
-                default:'100%'
+                default:''
             }
         },
         methods: {
@@ -47,8 +55,8 @@
                 let barOffsetY = this.getScrollBarInfo().distance;
                 if(event.target.classList.contains('scroll-bar')) {
                     let offset = event.layerY > barOffsetY ? event.layerY - this.scrollBarHeight : event.layerY;
-                    this.contentMoveByBar(-offset);
-                    this.dragScrollBarMove(offset);
+                    this.ClickScrollBarMove(offset);
+                    this.contentMoveByBar(offset);
                 }
             },
             mousewheel(event) {
@@ -59,39 +67,47 @@
                     direction = 'down';
                 }
                 if(direction === 'up') {
-                    let offsetY =distance + offset < 0 ? distance + offset : 0;
-                    if(distance < 0) {
-                        this.BarMoveByContent(-offsetY);
+                    let offsetY;
+                    offsetY = distance + offset < this.scrollContentOffsetTop ? distance + offset : this.scrollContentOffsetTop;
+                    if(distance < this.scrollContentOffsetTop) {
+                        this.BarMoveByContent(this.scrollContentOffsetTop - offsetY);
                         this.moveScrollContent(offsetY);
                     }
                 }
                 if(direction === 'down') {
-                    let offsetY = distance - offset > this.offsetScrollContentH ? distance - offset : this.offsetScrollContentH;
-                    if(distance > this.offsetScrollContentH) {
-                        this.BarMoveByContent(-offsetY);
+                    let tmpOffset = this.scrollContentOffsetTop - this.offsetScrollContentH;
+                    let offsetY = distance - offset > tmpOffset ? distance - offset : tmpOffset;
+                    if(distance >= tmpOffset) {
+                        this.BarMoveByContent(this.scrollContentOffsetTop - offsetY);
                         this.moveScrollContent(offsetY);
                     }
                 }
                 this.scrollBarAction();
             },
+            updateScrollContentOffsetTop(){
+                let contain = this.$el.querySelector('.scroll-contain');
+                let overlayer = this.$el.querySelector('.scroll-overflow');
+                let translateY = this.getScrollContentInfo().distance;
+                this.scrollContentOffsetTop =  overlayer.getBoundingClientRect().top - contain.getBoundingClientRect().top + translateY;
+            },
             getScrollContentInfo(){
                 let result = /(\-?\d+)(px)?/.exec(this.scrollContentStyle.transform);
                 return {
-                    distance:Number.parseInt(result[1],10),
-                    height: this.scrollContentHeight
+                    distance:Number.parseInt(result[1],10), // the value of the transform attribute like the 10 of the translateY(10px)
+                    height: this.scrollContentHeight // the heigth of the actual content
                 };
             },
             getScrollBarInfo() {
                 let result = /(\-?\d+)(px)?/.exec(this.scrollBarStyle.transform);
                 return {
-                    distance:Number.parseInt(result[1],10),
-                    height:this.scrollBarHeight
+                    distance:Number.parseInt(result[1],10),// as same as the scrollContent
+                    height:this.scrollBarHeight// as same as the scrollContent
                 }
             },
             updateContainRect() {
-                this.scrollContentHeight = this.$el.querySelector('.scroll-contain').clientHeight;
+                this.scrollContentHeight = this.$el.querySelector('.scroll-contain').clientHeight; // caculate the height of the container containing the scroll content
             },
-            dragScrollBarMove(num) {
+            ClickScrollBarMove(num) {
                 let actualNum = num;
                 if(num <= 0) {
                     actualNum = 0;
@@ -123,34 +139,52 @@
             },
             contentMoveByBar(offset) {
                 let h = 0;
-                h = offset * this.scrollContentHeight / this.containHeight;
+                h = this.scrollContentOffsetTop - offset * this.scrollContentHeight / this.containHeight;
                 this.scrollContentStyle.transform = `translateY(${h}px)`;
             },
             BarMoveByContent(offset) {
                 let h = 0;
-                if(offset !== undefined) {
-                    h = offset / this.scrollContentHeight * this.containHeight;
-                } else {
-                    h = this.containHeight - this.scrollBarHeight;
-                }
+                h = offset / this.scrollContentHeight * this.containHeight;
                 this.scrollBarStyle.transform = `translateY(${h}px)`;
             },
             updateStyle(){
                 this.$nextTick(() => {
                     this.updateContainRect();
+                    this.updateScrollContentOffsetTop();
+                    let translateY = this.getScrollContentInfo().distance;
                     if(this.scrollContentHeight > this.containHeight) {
-                        this.scrollContentStyle = {
-                            transform: 'translateY(' + (this.containHeight - this.scrollContentHeight) + 'px)'
-                        }
-                        this.offsetScrollContentH = this.containHeight - this.scrollContentHeight;
+                        this.offsetScrollContentH = this.scrollContentHeight - this.containHeight; 
                         this.scrollBarAction();
                         this.calculateBar();
-                        this.BarMoveByContent();
+                        if(this.scrollContentOffsetTop === 0) {
+                            this.scrollContentStyle = {
+                                transform: 'translateY(' + (this.containHeight - this.scrollContentHeight) + 'px)'
+                            }
+                        }
+                        this.BarMoveByContent(this.scrollContentOffsetTop - this.getScrollContentInfo().distance);
+
+                    } else {
+                        this.offsetScrollContentH = 0;
+                        this.calculateBar();
                     }
                 })
             }
         },
+        created() {
+            if(this.height) {
+                this.componentRectStyle = {
+                    height: this.height,
+                    width: this.width
+                }
+            }
+        },
         mounted() {
+            if(!this.height) {
+                this.componentRectStyle = {
+                    height: this.$el.parentNode.offsetHeight + 'px',
+                    width: this.$el.parentNode.offsetWidth + 'px'
+                }
+            }
             this.containWidth = this.$el.clientWidth;
             this.containHeight = this.$el.clientHeight;
             this.updateContainRect();
@@ -161,10 +195,20 @@
     .components-scroll {
         overflow: hidden;
         position: relative;
+        width:100%;
+        box-sizing:border-box;
+    }
+    .scroll-overflow {
+        width:100%;
+        height:100%;
+        overflow:hidden;
+        position: relative;
     }
     .scroll-contain {
         transition:all 0.2s ease-in-out;
         will-change:transform;
+        width:100%;
+        box-sizing: border-box;
     }
     .scroll-bar {
         position: absolute;
