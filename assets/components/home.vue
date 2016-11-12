@@ -2,18 +2,14 @@
     <article class="component-home">
         <aside>
              <header class="sideTitle">
-                <h1>ONLINE 
-                <svg>
-                     <use xlink:href="/static/images/sprite/common.svg#network"></use>
-                 </svg>
+                <h1>ONLINE
+                <icon base="common" name="network"></icon>
                 </h1>
              </header>
              <ul>
                  <li v-for="(u,i) in user" :style="{'animation-delay': Math.random() * 10 + 's'}">
-                     <svg class="avatar">
-                         <use v-bind="{'xlink:href':'/static/images/sprite/avatar.svg#'+ u.avatar }"></use>
-                     </svg>
-                     <span>{{u.name}}</span>
+                    <icon class-name="avatar" base="avatar" :name="u.avatar"></icon>
+                    <span>{{u.name}}</span>
                  </li>
              </ul>
         </aside>
@@ -21,9 +17,7 @@
             <header class="contentTitle">
                 <div>
                     <span>{{currentUser.name}}</span>
-                    <svg class="avatar">
-                         <use v-bind="{'xlink:href':'/static/images/sprite/avatar.svg#'+ currentUser.avatar }"></use>
-                     </svg>
+                    <icon class-name="avatar" base="avatar" :name="currentUser.avatar"></icon>
                 </div>
                 <div>
                     
@@ -37,6 +31,8 @@
 </template>
 <script>
     import vDialog from 'components/dialog';
+    import icon from 'components/icon';
+
     export default {
         data() {
             return {
@@ -63,7 +59,8 @@
             };
         },
         components: {
-            vDialog
+            vDialog,
+            icon
         }
     }
 </script>
