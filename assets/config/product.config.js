@@ -11,7 +11,7 @@ newConfig.module.loaders.push(
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract({
             fallbackLoader: 'style-loader',
-            loader: 'css!postcss!sass-loader'
+            loader: 'css-loader!postcss-loader!sass-loader'
         })
     }
 );

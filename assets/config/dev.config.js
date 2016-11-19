@@ -12,7 +12,7 @@ newConfig = Object.assign(config, {
         },
         hot: true,
         inline: true,
-        grogress: true,
+        // grogress: true,
         // proxy:proxy,
         port:8888
     }
@@ -21,7 +21,7 @@ newConfig.module.loaders.push(
     // 编译sass 编译css并自动添加css前缀
     {
         test: /\.scss$/,
-        loader: 'style!css?sourceMap!postcss!sass?sourceMap'
+        loader: 'style-loader!css-loader?sourceMap!postcss-loader!sass-loader?sourceMap'
     }
 )
 

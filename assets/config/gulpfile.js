@@ -1,7 +1,6 @@
 var gulp = require('gulp'),
     path = require('path'),
     fs = require('fs')
-clone = require('clone'),
     plugins = require('gulp-load-plugins')({
         pattern: ['gulp-*', 'gulp.*']
     });

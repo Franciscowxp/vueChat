@@ -28,12 +28,12 @@ module.exports = {
             // 解析.vue文件
             {
                 test: /\.vue$/,
-                loader: 'vue'
+                loader: 'vue-loader'
             },
             // 转化ES6的语法
             {
                 test: /\.js$/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 exclude: /node_modules/
             },
             // 图片转化，小于8K自动转化为base64的编码
@@ -48,7 +48,7 @@ module.exports = {
             },
             {
                 test: /\.json$/,
-                loader:'json',
+                loader:'json-loader',
                 exclude: /node_modules/
             }
             //html模板编译？
@@ -60,7 +60,7 @@ module.exports = {
             // .vue的配置。需要单独出来配置，其实没什么必要--因为我删了也没保错，不过这里就留这把，因为官网文档里是可以有单独的配置的。
             vue: {
                 loaders: {
-                    css: 'style!css!postcss',
+                    css: 'style-loader!css-loader!postcss-loader',
                 }
             },
             // 使用postcss 来加载autoprefixer
