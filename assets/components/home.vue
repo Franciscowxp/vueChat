@@ -31,7 +31,7 @@
 </template>
 <script>
     import vDialog from 'components/dialog';
-    import icon from 'components/icon';
+    import icon from 'components/utility/icon';
 
     export default {
         data() {

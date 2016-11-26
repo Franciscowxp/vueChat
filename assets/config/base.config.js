@@ -86,6 +86,7 @@ module.exports = {
             modules: path.join(__dirname, '../modules'),
             store: path.join(__dirname, '../store'),
             mock: path.join(__dirname, '../mock/'),
+            data: path.join(__dirname, '../data/'),
             sass: path.join(__dirname, '../static/sass'),
             fonts: path.join(__dirname, '../static/fonts'),
             images: path.join(__dirname, '../static/images')

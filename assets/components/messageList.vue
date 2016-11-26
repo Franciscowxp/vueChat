@@ -11,7 +11,7 @@
 </template>
 <script>
     import {mapGetters} from 'vuex';
-    import scroll from 'components/scroll';
+    import scroll from 'components/utility/scroll';
     export default {
         data() {
             return {};

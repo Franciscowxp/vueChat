@@ -11,7 +11,12 @@
                 </scroll>
             </div>
             <div class="tool-bar">
-                <span @click="addOne" class="tool-bar-send">Send</span>
+                <component :is="floatComponent" :position="floatTipPosition"></component>
+                <span class="tool-bar-svg" v-for="tool in toolBar" @click="switchComponent($event, tool)">
+                    <icon :base="tool.icon.base" :name="tool.icon.name"></icon>
+                </span>
+                <wave-btn v-on:click="addOne" class-name="tool-bar-send">Send</wave-btn>
+                <!-- <span @click="addOne" class="tool-bar-send">Send</span> -->
             </div>
         </div>
     </section>
@@ -19,21 +24,46 @@
 <script>
     import messageList from 'components/messageList';
     import mockList from 'mock/message';
-    import scroll from 'components/scroll';
-
+    import scroll from 'components/utility/scroll';
+    import icon from 'components/utility/icon';
+    import waveBtn from 'components/utility/button';
+    import emoticon from 'components/emoticon';
     export default {
         data() {
             return {
                 msgList:mockList,
                 status:true,
-                contentHeight:0
+                contentHeight:0,
+                toolBar: [{
+                    icon: {
+                        base: 'common',
+                        name: 'emoticon'
+                    },
+                    linkComponent:'emoticon'
+                }],
+                floatComponent:'',
+                floatTipPosition:{}
             };
         },
         components: {
             messageList,
-            scroll
+            scroll,
+            icon,
+            emoticon,
+            waveBtn
         },
         methods: {
+            transformClientRect(clientRect) {
+                let newObj = {};
+                for(var key in clientRect) {
+                    newObj[key] = clientRect[key];
+                }
+                return newObj;
+            },
+            switchComponent(event, item){
+                this.floatTipPosition = this.transformClientRect(event.target.getBoundingClientRect());
+                this.floatComponent = this.floatComponent === item.linkComponent ? '' : item.linkComponent;
+            },
             addOne(){
                 if(this.status) {
                     this.msgList.push({
@@ -114,17 +144,28 @@
         flex-flow:row nowrap;
         justify-content:flex-end;
         align-items:stretch;
+        svg {
+            width:40px;
+            height:100%;
+        }
+        >span {
+            flex: 0 0 auto;
+            margin-left: 20px;
+        }
+    }
+    .tool-bar-svg {
+        cursor: pointer;
     }
     .tool-bar-send {
         color:white;
         text-align: center;
         background:#00aeef;
         font-size:14px;
-        flex: 0 0 auto;
         line-height: 40px;
         padding:0 20px;
         border-radius: 2px;
         cursor: pointer;
+        margin-left:20px;
         transition:all 0.2s ease;
         -moz-user-select:none; /*火狐*/
         -webkit-user-select:none; /*webkit浏览器*/
@@ -133,6 +174,9 @@
         user-select:none;
         &:hover {
             background:darken(#00aeef,5%);
+        }
+        .wave {
+            color:darken(#00aeef,7%);
         }
     }
     div[contenteditable] {
