@@ -15,6 +15,7 @@ newConfig = Object.assign(config, {
         // grogress: true,
         // proxy:proxy,
         port:8888
+        // host:'10.33.1.140'
     }
 });
 newConfig.module.loaders.push(

@@ -50,6 +50,10 @@ module.exports = {
                 test: /\.json$/,
                 loader:'json-loader',
                 exclude: /node_modules/
+            },
+            {
+                test: /\.css$/,
+                loader: 'css-loader'
             }
             //html模板编译？
             // { test: /\.(html|tpl)$/, loader: 'html-loader' },

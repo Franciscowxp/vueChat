@@ -6,7 +6,7 @@
     @touchend="slideEnd($event)"
     @mousewheel="mousewheel($event)" >
         <div  :style="{'transform' : 'translate3d(' + translateX + 'px, 0, 0)'}" :class="[dragging ? 'dragging' : '']">
-            <span v-for="(item,index) in listData" @click="changeCate(item,index)">{{item.name}}</span>
+            <span v-for="(item,index) in listData" @click="changeCate(index)">{{item.name}}</span>
             <strong :style="activeBarStyle"></strong>
         </div>
     </nav>
@@ -38,7 +38,7 @@
                 type: Array,
                 require: true
             },
-            index: {
+            curIndex: {
                 type: Number,
                 default() {
                     return 0;
@@ -103,8 +103,8 @@
                     this.translateX = moveX;
                 }
             },
-            changeCate(item,index) {
-                this.panelChange(item,index);
+            changeCate(index) {
+                this.panelChange(index);
             },
             getWidth() {
                 this.wrap = this.$el.querySelector('div');
@@ -117,43 +117,33 @@
                 });
                 this.rightBoundary = this.wrapWidth - this.parentWidth > 0 ? this.wrapWidth - this.parentWidth : 0;
             },
-            panelChange(item,index) {
+            panelChange(index) {
+                let item = this.listData[index];
                 if(index !== this.activeIndex) {
                     this.activeIndex = index;
                     if(!item.width) {
                         this.getWidth();
                     }
-                    this.setPanelPosition(item);
+                    this.setPanelPosition(item,index);
                 }
             },
-            setPanelPosition(item) {
+            setPanelPosition(item,index) {
                 this.activeBarStyle = {
                     width:item.width + 'px',
                     left: item.offsetX + 'px'
                 };
                 this.clickTranslate(item);
-                this.$emit('panel-invoke',item);
+                this.$emit('panel-invoke',{index,...item});
             }
         },
-        // watch: {
-        //     getChannelPanelStatus(val,oldVal) {
-        //         if(!this.wrapWidth && val && !oldVal) {
-        //             this.getWidth();
-        //             let item = this.listData[this.activeIndex];
-        //             this.setPanelPosition(item);
-        //         }
-        //     }
-        // },
-        // events:{
-        //     ['slide-panel-invoke'](index){
-        //         let item = this.listData[index];
-        //         this.panelChange(item,index);
-        //     }
-        // },
+        watch: {
+            curIndex(val) {
+                this.panelChange(val);
+            }
+        },
         mounted() {
             this.getWidth();
-            // let item = this.listData[this.index];
-            // item && this.panelChange(item, this.index);
+            this.panelChange(this.curIndex);
         }
     }
 </script>

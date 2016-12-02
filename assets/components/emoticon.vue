@@ -1,17 +1,17 @@
 <template>
     <float-tip :position="position">
         <section class="component-emoticon">
-            <slide-panel :list-data="panelData" v-on:panel-invoke="switchData" className="emoticon-panel"></slide-panel>
+            <slide-panel :listData="panelData" @panel-invoke="switchData" className="emoticon-panel" :curIndex="currentIndex"></slide-panel>
             <div class="component-emoticon-switch">
-                <Swipe>
-                    <SwipeItem v-for="sec in emoticonPackage">
+                <swipe :auto="0" :showIndicators="false" @swipe-invoke="swipeInvoke" :curIndex="currentIndex">
+                    <swipeItem v-for="sec in emoticonPackage">
                         <div class="emoticon-list">
-                            <span v-for="item in sec.emoticon" @click="chooseEmo(sec.name,item)">
+                            <span v-for="item in sec.emoticon" @click="chooseEmo(sec.name,item)" unselectable="on">
                                 <icon :base="sec.name" :name="item"></icon>
                             </span>
                         </div>
-                    </SwipeItem>
-                </Swipe>
+                    </swipeItem>
+                </swipe>
             </div>
         </section>
     </float-tip>
@@ -19,13 +19,17 @@
 <script>
     import slidePanel from 'components/utility/slidePanel';
     import floatTip from 'components/utility/floatTip';
-    import { Swipe, SwipeItem } from 'vue-swipe';
-    import  emoticonPackage from 'data/emoticon';
+    import swipeItem from 'components/utility/swipeItem';
+    import swipe from 'components/utility/swipe';
+    import emoticonPackage from 'data/emoticon';
     import icon from 'components/utility/icon';
+    import { mapActions, mapGetters } from 'vuex';
+    import { getCaretPosition, setCaretPosition } from 'modules/util';
     export default {
         data() {
             return {
-                emoticonPackage
+                emoticonPackage,
+                currentIndex: 0
             };
         },
         computed: {
@@ -37,7 +41,8 @@
                     })
                 }
                 return newData;
-            }
+            },
+            ...mapGetters(['getCaret'])
         },
         props: {
             position: {
@@ -47,17 +52,27 @@
         },
         components: {
             slidePanel,
-            Swipe,
-            SwipeItem,
+            swipe,
+            swipeItem,
             floatTip,
             icon
         },
         methods: {
+            ...mapActions(['draftAppendAct']),
+            createEmojiItem(emoName,emoItem){
+                return `<img class="svgIcon" src="/static/images/svg/emoticon/${emoName}/${emoItem}.svg" alt="">`;
+            },
             switchData(item) {
-                console.log(item);
+                this.currentIndex = item.index;
             },
             chooseEmo(emoName,emoItem){
-
+                var editBox = document.querySelector('div[contenteditable]');
+                editBox.focus(this.getCaretPosition);
+                setCaretPosition(this.getCaret);
+                document.execCommand('insertHTML', false, this.createEmojiItem(emoName,emoItem));
+            },
+            swipeInvoke(data) {
+                this.currentIndex = data.index;
             }
         },
         mounted(){
@@ -82,7 +97,7 @@
     }
     .component-emoticon-switch {
         width:400px;
-        // height:300px;
+        height:340px;
         padding:20px;
         box-sizing: border-box;
     }

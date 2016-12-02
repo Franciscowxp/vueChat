@@ -6,13 +6,13 @@
         <div class="input-box">
             <div class="input-contain">
                 <scroll ref="scroll">
-                    <div contenteditable @input="updateInput($event)">
+                    <div contenteditable="true" @input="updateInput($event)" @blur="saveTheCaret($event)" >
                     </div>
                 </scroll>
             </div>
             <div class="tool-bar">
                 <component :is="floatComponent" :position="floatTipPosition"></component>
-                <span class="tool-bar-svg" v-for="tool in toolBar" @click="switchComponent($event, tool)">
+                <span class="tool-bar-svg" v-for="tool in toolBar" @click="switchComponent($event, tool)" unselectable="on">
                     <icon :base="tool.icon.base" :name="tool.icon.name"></icon>
                 </span>
                 <wave-btn v-on:click="addOne" class-name="tool-bar-send">Send</wave-btn>
@@ -28,12 +28,15 @@
     import icon from 'components/utility/icon';
     import waveBtn from 'components/utility/button';
     import emoticon from 'components/emoticon';
+    import { mapActions, mapGetters } from 'vuex';
+    import { getCaretPosition } from 'modules/util';
     export default {
         data() {
             return {
                 msgList:mockList,
                 status:true,
                 contentHeight:0,
+                editHander: null,
                 toolBar: [{
                     icon: {
                         base: 'common',
@@ -52,13 +55,25 @@
             emoticon,
             waveBtn
         },
+        computed: {
+            ...mapGetters({ editContent: 'getDraft'})
+        },
+        watch: {
+            editContent(val) {
+                // this.editHander.innerHTML = val;
+            }
+        },
         methods: {
+            ...mapActions(['draftAct', 'caretAct']),
             transformClientRect(clientRect) {
                 let newObj = {};
                 for(var key in clientRect) {
                     newObj[key] = clientRect[key];
                 }
                 return newObj;
+            },
+            saveTheCaret(event) {
+                this.caretAct((getCaretPosition(event.target)));
             },
             switchComponent(event, item){
                 this.floatTipPosition = this.transformClientRect(event.target.getBoundingClientRect());
@@ -83,6 +98,7 @@
                 this.status = !this.status;
             },
             updateInput(event) {
+                this.draftAct(event.target.innerHTML);
                 if(this.contentHeight !== event.target.clientHeight) {
                     this.contentHeight = event.target.clientHeight;
                     this.$refs.scroll.updateStyle();
@@ -90,6 +106,7 @@
             }
         },
         mounted(){
+            this.editHander = this.$el.querySelector('div[contenteditable]');
         }
     }
 </script>
@@ -186,6 +203,13 @@
         box-sizing:border-box;
         word-break: break-all;
         word-wrap: break-word;
+        text-align:left;
+        .svgIcon {
+            width:40px;
+            height:40px;
+            display: inline-block;
+            vertical-align:bottom;
+        }
     }
 
 </style>

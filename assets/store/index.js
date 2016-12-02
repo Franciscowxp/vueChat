@@ -10,10 +10,15 @@ const state = {
     user: {
         name:'wxp',
         id:1
+    },
+    draft: '',
+    caret: {
+        dom: null,
+        position: 0
     }
 }
 
 export
 default new Vuex.Store({
-    state, mutations,getters,actions
+    state, mutations, getters, actions
 });

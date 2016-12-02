@@ -1,6 +1,13 @@
-const getUser = (state) => {
-    return state.user;
+const getters = {
+    getUser(state) {
+        return state.user;
+    },
+    getDraft(state) {
+        return state.draft;
+    },
+    getCaret(state) {
+        return state.caret;
+    }
 };
-export default {
-    getUser
-}
+
+export default getters;

@@ -1,7 +1,13 @@
-const userAct = ({dispatch, state},obj) => {
-    dispatch('USER', obj);
+const actions = {
+    userAct({commit}, obj){
+        commit('USER', obj);
+    },
+    draftAct({commit}, val){
+        commit('DRAFT', val);
+    },
+    caretAct({commit}, obj) {
+        commit('CARET', obj);
+    }
 };
 
-export default {
-    userAct
-};
+export default actions;
