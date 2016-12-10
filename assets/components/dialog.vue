@@ -6,7 +6,7 @@
         <div class="input-box">
             <div class="input-contain">
                 <scroll ref="scroll">
-                    <div contenteditable="true" @input="updateInput($event)" @blur="saveTheCaret($event)" >
+                    <div contenteditable="true" @input="updateInput($event)" @blur="saveTheCaret($event)">
                     </div>
                 </scroll>
             </div>
@@ -16,7 +16,6 @@
                     <icon :base="tool.icon.base" :name="tool.icon.name"></icon>
                 </span>
                 <wave-btn v-on:click="addOne" class-name="tool-bar-send">Send</wave-btn>
-                <!-- <span @click="addOne" class="tool-bar-send">Send</span> -->
             </div>
         </div>
     </section>
@@ -55,16 +54,13 @@
             emoticon,
             waveBtn
         },
-        computed: {
-            ...mapGetters({ editContent: 'getDraft'})
-        },
         watch: {
             editContent(val) {
                 // this.editHander.innerHTML = val;
             }
         },
         methods: {
-            ...mapActions(['draftAct', 'caretAct']),
+            ...mapActions(['caretAct']),
             transformClientRect(clientRect) {
                 let newObj = {};
                 for(var key in clientRect) {
@@ -80,25 +76,15 @@
                 this.floatComponent = this.floatComponent === item.linkComponent ? '' : item.linkComponent;
             },
             addOne(){
-                if(this.status) {
-                    this.msgList.push({
-                        "owner": "wxp",
-                        "receiver": "other",
-                        "timestamp": 36000,
-                        "detail": "this is new test message from wxp to other"
-                    })
-                } else {
-                    this.msgList.push({
-                        "owner": "test",
-                        "receiver": "wxp",
-                        "timestamp": 36000,
-                        "detail": "this is new test message from wxp to other"
-                    })
-                }
-                this.status = !this.status;
+                this.msgList.push({
+                    "owner": "wxp",
+                    "receiver": "other",
+                    "timestamp": 36000,
+                    "detail": this.editHander.innerHTML
+                })
+                this.editHander.innerHTML = '';
             },
             updateInput(event) {
-                this.draftAct(event.target.innerHTML);
                 if(this.contentHeight !== event.target.clientHeight) {
                     this.contentHeight = event.target.clientHeight;
                     this.$refs.scroll.updateStyle();
@@ -204,12 +190,12 @@
         word-break: break-all;
         word-wrap: break-word;
         text-align:left;
-        .svgIcon {
-            width:40px;
-            height:40px;
-            display: inline-block;
-            vertical-align:bottom;
-        }
+    }
+    .svgEmoji {
+        width:40px;
+        height:40px;
+        display: inline-block;
+        vertical-align:bottom;
     }
 
 </style>

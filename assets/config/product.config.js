@@ -41,8 +41,8 @@ newConfig.plugins = (config.plugins || []).concat([
     //     minChunks: 2
     // }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new ExtractTextPlugin('../dist/css/[name].css')
+    new ExtractTextPlugin('../dist/css/[name].css'),
+    // new webpack.optimize.DedupePlugin()
 
 ]);
 

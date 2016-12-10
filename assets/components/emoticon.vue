@@ -58,15 +58,14 @@
             icon
         },
         methods: {
-            ...mapActions(['draftAppendAct']),
             createEmojiItem(emoName,emoItem){
-                return `<img class="svgIcon" src="/static/images/svg/emoticon/${emoName}/${emoItem}.svg" alt="">`;
+                return `<img class="svgEmoji" src="/static/images/svg/emoticon/${emoName}/${emoItem}.svg" alt="">`;
             },
             switchData(item) {
                 this.currentIndex = item.index;
             },
             chooseEmo(emoName,emoItem){
-                var editBox = document.querySelector('div[contenteditable]');
+                let editBox = document.querySelector('div[contenteditable]');
                 editBox.focus(this.getCaretPosition);
                 setCaretPosition(this.getCaret);
                 document.execCommand('insertHTML', false, this.createEmojiItem(emoName,emoItem));

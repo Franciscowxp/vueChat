@@ -11,7 +11,6 @@ const state = {
         name:'wxp',
         id:1
     },
-    draft: '',
     caret: {
         dom: null,
         position: 0

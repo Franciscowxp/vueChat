@@ -39,6 +39,43 @@ input[type="button"]::-moz-focus-inner {
   font-weight: normal;
   font-style: normal; }
 
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s; }
+
+.fade-enter, .fade-leave-active {
+  opacity: 0; }
+
+.flipIn-enter-active, .flipIn-leave-active {
+  transition: all 0.5s; }
+
+.flipIn-enter, .flipIn-leave-active {
+  opacity: 0;
+  transform: translateX(-50px); }
+  .flipIn-enter.owner, .flipIn-leave-active.owner {
+    transform: translateX(50px); }
+
+.flip-enter-active {
+  animation: flipInY 2s; }
+
+.flip-enter {
+  background: red !important; }
+
+@keyframes flipInY {
+  from {
+    transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+    animation-timing-function: ease-in;
+    opacity: 0; }
+  40% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+    animation-timing-function: ease-in; }
+  60% {
+    transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+    opacity: 1; }
+  80% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -5deg); }
+  to {
+    transform: perspective(400px); } }
+
 #app {
   height: 100vh;
   font-family: 'Lato-Regular';

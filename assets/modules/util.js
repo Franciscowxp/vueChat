@@ -56,7 +56,6 @@ const getCaretPosition = (editableDiv) => {
         range = sel.getRangeAt(0);
         dom = sel.anchorNode;
         caretPos = sel.anchorOffset;
-        console.log(dom)
     }
     return {
         position: caretPos,

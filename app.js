@@ -1,32 +1,38 @@
-const koa = require('koa');
-const router = require('koa-router')();
-const logger = require('koa-logger');
-const views = require('koa-views');
-const static = require('koa-static');
-const path = require('path');
-const app = new koa();
+import Koa from 'koa';
+import koaRouter from 'koa-router';
+import koaViews from 'koa-views';
+import koaLogger from 'koa-logger';
+import koaStatic from 'koa-static';
+import koaBody from 'koa-bodyparser';
+import ws from 'ws'
+import path from 'path';
 
-const viewConf = views(__dirname + '/assets/html', {
+const app = new Koa();
+const wss = new ws.Server({
+    server: app
+});
+const wsc = [];
+const router = koaRouter();
+const viewConf = koaViews(__dirname + '/assets', {
     map: {
-        html: 'mustache'
+        html: 'nunjucks'
     }
-})
+});
 
-const staticConf = static(__dirname + '/assets/build');
+const staticConf = koaStatic(__dirname + '/assets/dist');
 
 router.get('/', async(ctx, next) => {
     await ctx.render('index', {
         now: new Date()
     });
 });
-router.get('/test', async(ctx, next) => {
-    ctx.body = 'hello world test page';
-});
+
 
 app
 .use(staticConf)
 .use(viewConf)
-.use(logger())
+.use(koaLogger())
+.use(koaBody())
 .use(router.routes())
 .use(router.allowedMethods());
 app.listen(3000);

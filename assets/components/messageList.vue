@@ -3,7 +3,7 @@
             <scroll ref="scroll">
                 <transition-group name="flipIn" tag="div">
                     <div v-for="item in listData" class="msgItem" :class="[item.owner === getUser.name ? 'owner': '']" :key="item">
-                        <p>{{item.detail}}</p>
+                        <p v-html="item.detail"></p>
                     </div>
                 </transition-group>
             </scroll>
@@ -48,6 +48,8 @@
             background: #00aeef;
             border-radius: 10px;
             display: inline-block;
+            font-family: 'Lato-Regular';
+
         }
         &.owner {
             text-align: right;

@@ -32,7 +32,6 @@
 <script>
     import vDialog from 'components/dialog';
     import icon from 'components/utility/icon';
-
     export default {
         data() {
             return {
