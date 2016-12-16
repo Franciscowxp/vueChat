@@ -1,6 +1,8 @@
 const mutations = {
     USER(state, obj) {
-        state.user = obj;
+        for(let [key,val] of Object.entries(obj)) {
+            state.user[key] = val;
+        }
     },
     CARET(state, obj) {
         for(let [key,val] of Object.entries(obj)) {

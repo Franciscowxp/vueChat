@@ -15,7 +15,7 @@
                 <span class="tool-bar-svg" v-for="tool in toolBar" @click="switchComponent($event, tool)" unselectable="on">
                     <icon :base="tool.icon.base" :name="tool.icon.name"></icon>
                 </span>
-                <wave-btn v-on:click="addOne" class-name="tool-bar-send">Send</wave-btn>
+                <wave-btn v-on:click="sendOne" class-name="tool-bar-send">Send</wave-btn>
             </div>
         </div>
     </section>
@@ -29,6 +29,7 @@
     import emoticon from 'components/emoticon';
     import { mapActions, mapGetters } from 'vuex';
     import { getCaretPosition } from 'modules/util';
+    import Wsc from 'modules/wsc';
     export default {
         data() {
             return {
@@ -36,6 +37,7 @@
                 status:true,
                 contentHeight:0,
                 editHander: null,
+                wsclient: null,
                 toolBar: [{
                     icon: {
                         base: 'common',
@@ -54,10 +56,8 @@
             emoticon,
             waveBtn
         },
-        watch: {
-            editContent(val) {
-                // this.editHander.innerHTML = val;
-            }
+        computed: {
+            ...mapGetters(['getUser'])
         },
         methods: {
             ...mapActions(['caretAct']),
@@ -75,7 +75,7 @@
                 this.floatTipPosition = this.transformClientRect(event.target.getBoundingClientRect());
                 this.floatComponent = this.floatComponent === item.linkComponent ? '' : item.linkComponent;
             },
-            addOne(){
+            sendOne(){
                 this.msgList.push({
                     "owner": "wxp",
                     "receiver": "other",
@@ -83,6 +83,14 @@
                     "detail": this.editHander.innerHTML
                 })
                 this.editHander.innerHTML = '';
+            },
+            recieveOne(data) {
+                this.msgList.push({
+                    "owner": "wxp123",
+                    "receiver": "other",
+                    "timestamp": 36000,
+                    "detail": data.detials
+                })
             },
             updateInput(event) {
                 if(this.contentHeight !== event.target.clientHeight) {

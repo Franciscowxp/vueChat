@@ -8,8 +8,10 @@ Vue.use(Vuex);
 
 const state = {
     user: {
-        name:'wxp',
-        id:1
+        name:'',
+        avatar: '',
+        ws: null,
+        id:0
     },
     caret: {
         dom: null,

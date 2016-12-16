@@ -7,7 +7,7 @@
                 </h1>
              </header>
              <ul>
-                 <li v-for="(u,i) in user" :style="{'animation-delay': Math.random() * 10 + 's'}">
+                 <li v-for="(u,i) in onlineUser" :style="{'animation-delay': Math.random() * 10 + 's'}">
                     <icon class-name="avatar" base="avatar" :name="u.avatar"></icon>
                     <span>{{u.name}}</span>
                  </li>
@@ -16,50 +16,57 @@
         <section>
             <header class="contentTitle">
                 <div>
-                    <span>{{currentUser.name}}</span>
-                    <icon class-name="avatar" base="avatar" :name="currentUser.avatar"></icon>
+                    <span>{{getUser.name}}</span>
+                    <icon class-name="avatar" base="avatar" :name="getUser.avatar"></icon>
                 </div>
                 <div>
-                    
                 </div>
             </header>
             <div>
                 <v-dialog></v-dialog>
             </div>
         </section>
+        <transition name="fade">
+            <login v-if="isLogin"></login>
+        </transition>
     </article>
 </template>
 <script>
     import vDialog from 'components/dialog';
     import icon from 'components/utility/icon';
+    import login from 'components/login';
+    import Wsc from 'modules/wsc';
+    import { mapGetters, mapActions } from 'vuex';
     export default {
         data() {
             return {
-                user: [{
-                    avatar: 'man-1',
-                    name: 'francisco'
-                },{
-                    avatar: 'woman-1',
-                    name: 'francisco'
-                },{
-                    avatar: 'man-7',
-                    name: 'francisco'
-                },{
-                    avatar: 'woman-4',
-                    name: 'francisco'
-                },{
-                    avatar: 'man-3',
-                    name: 'francisco'
-                }],
-                currentUser: {
-                    avatar: 'man-1',
-                    name: 'francisco'
-                },
+                onlineUser: []
             };
+        },
+        computed: {
+            ...mapGetters(['getUser']),
+            isLogin() {
+                return !this.getUser.name;
+            }
         },
         components: {
             vDialog,
-            icon
+            icon,
+            login
+        },
+        methods: {
+            ...mapActions(['userAct'])
+        },
+        mounted() {
+            let wsclient = new Wsc({ url: 'ws:localhost:3000' });
+            this.userAct({ws: wsclient});
+            wsclient.register('updateUserList', (data) => {
+                let id= this.getUser.id;
+                data.detail.curId && this.userAct({id: data.detail.curId});
+                this.onlineUser = data.detail.list.filter((item) => {
+                    return item.id !== id;
+                });
+            });
         }
     }
 </script>

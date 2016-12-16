@@ -1,7 +1,7 @@
 /**
  * the data pattern
  * {
- *     type: text | image,
+ *     type: text | image | json,
  *     format: text | binary,
  *     detail: string | binary,
  *     timestamp: string,
@@ -10,24 +10,35 @@
  *     action: string
  * }
  */
-class wsc {
-    constructor(url){
+class Wsc {
+    constructor({
+        url,
+        open = () => {},
+        error = () => {},
+        close = () => {}
+    }) {
         this.ws = new WebSocket(url);
         this.msgHandlers = [];
+        this.message();
     }
-    register(action,func){
+    register(action, func) {
         this.msgHandlers.push({
             action,
             func
         })
     }
-    send(data){
+    send(data) {
         this.ws.send(data);
     }
-    message(){
-        this.ws.addEventListener('message',(data) => {
-            for(let [action,func] of this.msgHandlers) {
-                if(data.action === action) {
+    message() {
+        this.ws.addEventListener('message', (resp) => {
+            let data = JSON.parse(resp.data);
+            for (let {
+                    action,
+                    func
+                }
+                of this.msgHandlers) {
+                if (data.action === action) {
                     func(data);
                     return false;
                 }
@@ -36,3 +47,5 @@ class wsc {
     }
 
 }
+
+export default Wsc;
