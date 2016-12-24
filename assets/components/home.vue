@@ -60,10 +60,12 @@
         mounted() {
             let wsclient = new Wsc({ url: 'ws:localhost:3000' });
             this.userAct({ws: wsclient});
+            wsclient.register('updateUser', (data) => {
+                this.userAct({id: data.detail.id});
+            });
             wsclient.register('updateUserList', (data) => {
                 let id= this.getUser.id;
-                data.detail.curId && this.userAct({id: data.detail.curId});
-                this.onlineUser = data.detail.list.filter((item) => {
+                this.onlineUser = data.detail.filter((item) => {
                     return item.id !== id;
                 });
             });

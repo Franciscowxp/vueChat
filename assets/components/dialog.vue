@@ -22,7 +22,6 @@
 </template>
 <script>
     import messageList from 'components/messageList';
-    import mockList from 'mock/message';
     import scroll from 'components/utility/scroll';
     import icon from 'components/utility/icon';
     import waveBtn from 'components/utility/button';
@@ -33,7 +32,7 @@
     export default {
         data() {
             return {
-                msgList:mockList,
+                msgList:[],
                 status:true,
                 contentHeight:0,
                 editHander: null,
@@ -75,6 +74,16 @@
                 this.floatTipPosition = this.transformClientRect(event.target.getBoundingClientRect());
                 this.floatComponent = this.floatComponent === item.linkComponent ? '' : item.linkComponent;
             },
+            msgMaker({receiver = 'other',detail = ''}) {
+                let timestamp = new Date().getTime();
+                if(!detail) return false;
+                return {
+                    owner: this.getUser.name,
+                    receiver,
+                    timestamp,
+                    detail
+                }
+            },
             sendOne(){
                 this.msgList.push({
                     "owner": "wxp",
@@ -83,6 +92,11 @@
                     "detail": this.editHander.innerHTML
                 })
                 this.editHander.innerHTML = '';
+                this.getUser.ws.send(this.msgMaker({
+                    detail: this.editHander.innerHTML
+                })).then((data) => {
+                    this.editHander.innerHTML = '';
+                })
             },
             recieveOne(data) {
                 this.msgList.push({

@@ -56,11 +56,18 @@ class Wss {
         this.wss.on('connection', (ws) => {
             this.appendClient(ws);
             this.BindAction(ws);
-            ws.send(JSON.stringify({
+            ws.send(this.msgMaker({
+                action: 'updateUser',
+                detail: {id: ws.id}
+            }))
+            ws.send(this.msgMaker({
                 action: 'updateUserList',
-                detail: {curId: ws.id ,list:this.userList()}
+                detail: this.userList()
             }))
         });
+    }
+    msgMaker(data = {}) {
+        return JSON.stringify(data);
     }
     broadcast(data,id) {
         this.wsc.forEach((ws) => {
@@ -109,9 +116,9 @@ class Wss {
             updateUser: (data,ws) => {
                 ws.name = data.name;
                 ws.avatar = data.avatar;
-                this.broadcast(JSON.stringify({
+                this.broadcast(this.msgMaker({
                     action: 'updateUserList',
-                    detail: {list:this.userList()}
+                    detail: this.userList()
                 }), ws.id);
             }
         }
