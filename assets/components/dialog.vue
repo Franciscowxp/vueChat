@@ -28,7 +28,6 @@
     import emoticon from 'components/emoticon';
     import { mapActions, mapGetters } from 'vuex';
     import { getCaretPosition } from 'modules/util';
-    import Wsc from 'modules/wsc';
     export default {
         data() {
             return {
@@ -78,6 +77,7 @@
                 let timestamp = new Date().getTime();
                 if(!detail) return false;
                 return {
+                    action: 'exchangeMsg',
                     owner: this.getUser.name,
                     receiver,
                     timestamp,
@@ -85,26 +85,14 @@
                 }
             },
             sendOne(){
-                this.msgList.push({
-                    "owner": "wxp",
-                    "receiver": "other",
-                    "timestamp": 36000,
-                    "detail": this.editHander.innerHTML
-                })
-                this.editHander.innerHTML = '';
-                this.getUser.ws.send(this.msgMaker({
+                let content = this.editHander.innerHTML;
+                if(!content) return false;
+                const data = this.msgMaker({
                     detail: this.editHander.innerHTML
-                })).then((data) => {
-                    this.editHander.innerHTML = '';
-                })
-            },
-            recieveOne(data) {
-                this.msgList.push({
-                    "owner": "wxp123",
-                    "receiver": "other",
-                    "timestamp": 36000,
-                    "detail": data.detials
-                })
+                });
+                this.getUser.ws.send(data);
+                this.msgList.push({ ...data, name: this.getUser.name, avatar: this.getUser.avatar});
+                this.editHander.innerHTML = '';
             },
             updateInput(event) {
                 if(this.contentHeight !== event.target.clientHeight) {
@@ -115,6 +103,11 @@
         },
         mounted(){
             this.editHander = this.$el.querySelector('div[contenteditable]');
+            this.$nextTick(() => {
+                this.getUser.ws.register('exchangeMsg', (data) => {
+                    this.msgList.push(data);
+                })
+            });
         }
     }
 </script>

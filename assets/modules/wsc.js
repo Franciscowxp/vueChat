@@ -12,10 +12,8 @@
  * there are the actions below,
  *  updateUser
  *  updateUserList
- *  postMsg
- *  receiveMsg
- *  postFile
- *  receiveFile
+ *  exchangeMsg
+ *  exchangeFile
  */
 
 var ID = function () {
@@ -26,20 +24,16 @@ var ID = function () {
 };
 
 class WS {
-    constructor(ws){
-        this.ws = ws;
-        this.callback = [];
+    constructor(){
         this.msgHandlers = [];
+    }
+    init() {
         this.event('message', (res) => {
-            let data = JSON.parse(res.data);
-            if(/callback/.test(data.action)) {
-                this.dealCallback(data);
-            } else {
-                this.dealMsgHandlers(data);
-            }
+            let data = JSON.parse(res.data || res);
+            this.dealMsgHandlers(data);
         })
     }
-    register() {
+    register(action, func) {
         this.msgHandlers.push({
             action,
             func
@@ -50,81 +44,36 @@ class WS {
             if (data.action === action) {
                 func(data);
                 return false;
-            }
-        }
-    }
-    dealCallback(data) {
-        for (let [index, value] of this.callback.entries()) {
-            if (value.action === action) {
-                func(data);
-                this.callback.splice(index,1);
-                return false;
-            }
+            }1
         }
     }
     send(data){
-        let unique = 'callback' + ID()
-        let newData = {...data, callbackAction: unique};
-        return new Promise((resolve,reject) => {
-            this.send(data);
-            this.once({ action: unique, func: () => { resolve }});
-        });
+        this.ws.send(JSON.stringify(data));
     }
     event(type,func) {
         if(this.ws.on) {
             this.ws.on(type, (res) => {
                 func(res);
             })
-        }
-        if(this.ws.addEventListener) {
+        } else {
             this.ws.addEventListener(type, (res) => {
                 func(res);
             })
         }
     }
-    once(callback) {
-        this.callback.push(callback);
-    }
-
 }
 
-class Wsc {
+class Wsc extends WS {
     constructor({
         url,
         open = () => {},
         error = () => {},
         close = () => {}
     }) {
+        super();
         this.ws = new WebSocket(url);
-        this.msgHandlers = [];
-        this.message();
+        this.init();
     }
-    register(action, func) {
-        this.msgHandlers.push({
-            action,
-            func
-        })
-    }
-    send(data) {
-        this.ws.send(data);
-    }
-    message() {
-        this.ws.addEventListener('message', (resp) => {
-            console.log(resp)
-            let data = JSON.parse(resp.data);
-            for (let {
-                    action,
-                    func
-                }
-                of this.msgHandlers) {
-                if (data.action === action) {
-                    func(data);
-                    return false;
-                }
-            }
-        });
-    }
-
 }
 
-export default Wsc;
+export { Wsc, WS};

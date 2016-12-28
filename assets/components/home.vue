@@ -35,7 +35,7 @@
     import vDialog from 'components/dialog';
     import icon from 'components/utility/icon';
     import login from 'components/login';
-    import Wsc from 'modules/wsc';
+    import { Wsc } from 'modules/wsc';
     import { mapGetters, mapActions } from 'vuex';
     export default {
         data() {

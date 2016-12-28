@@ -4,6 +4,7 @@ import koaViews from 'koa-views';
 import koaLogger from 'koa-logger';
 import koaStatic from 'koa-static';
 import koaBody from 'koa-bodyparser';
+import { WS } from './assets/modules/wsc';
 import ws from 'ws'
 import path from 'path';
 
@@ -34,6 +35,13 @@ app
 
 
 const server = app.listen(3000);
+class Wsc extends WS {
+    constructor(ws) {
+        super();
+        this.ws = ws;
+        this.init();
+    }
+}
 class Wss {
     /*
      * wsc item
@@ -49,30 +57,27 @@ class Wss {
         this.wss = new wsserver({
             server: app
         });
-        this.actionList();
         this.initEvent();
     }
     initEvent() {
         this.wss.on('connection', (ws) => {
-            this.appendClient(ws);
-            this.BindAction(ws);
-            ws.send(this.msgMaker({
+            let wsc = new Wsc(ws);
+            this.appendClient(wsc);
+            this.BindAction(wsc);
+            wsc.send({
                 action: 'updateUser',
-                detail: {id: ws.id}
-            }))
-            ws.send(this.msgMaker({
+                detail: {id: wsc.id}
+            });
+            wsc.send({
                 action: 'updateUserList',
                 detail: this.userList()
-            }))
+            });
         });
     }
-    msgMaker(data = {}) {
-        return JSON.stringify(data);
-    }
     broadcast(data,id) {
-        this.wsc.forEach((ws) => {
-            if(ws.id !== id) {
-                ws.send(data);
+        this.wsc.forEach((wsc) => {
+            if(wsc.id !== id) {
+                wsc.send(data);
             }
         });
     }
@@ -93,35 +98,24 @@ class Wss {
         });
         return userList;
     }
-    appendClient(ws) {
-        ws.name = '';
-        ws.avatar = '';
-        ws.id = this.index++;
-        this.wsc.push(ws);
+    appendClient(wsc) {
+        wsc.name = '';
+        wsc.avatar = '';
+        wsc.id = this.index++;
+        this.wsc.push(wsc);
     }
-    BindAction(ws) {
-        ws.on('message', (data) => {
-            let parsedData = JSON.parse(data);
-            this.actions[parsedData.action](parsedData.detail,ws);
+    BindAction(wsc) {
+        wsc.register('updateUser', (data) => {
+            wsc.name = data.detail.name;
+            wsc.avatar = data.detail.avatar;
+            this.broadcast({
+                action: 'updateUserList',
+                detail: this.userList()
+            }, wsc.id);
         });
-        ws.on('error', () => {
-
+        wsc.register('exchangeMsg', (data) => {
+            this.broadcast({ ...data, name: wsc.name, avatar: wsc.avatar }, wsc.id);
         });
-        ws.on('close', () => {
-
-        });
-    }
-    actionList() {
-        this.actions = {
-            updateUser: (data,ws) => {
-                ws.name = data.name;
-                ws.avatar = data.avatar;
-                this.broadcast(this.msgMaker({
-                    action: 'updateUserList',
-                    detail: this.userList()
-                }), ws.id);
-            }
-        }
     }
 }
 

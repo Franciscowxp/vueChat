@@ -90,7 +90,7 @@
                                 avatar: this.choosedAvatar.avatar
                             }
                 };
-                this.getUser.ws.send(JSON.stringify(data));
+                this.getUser.ws.send(data);
                 this.userAct(data.detail);
             }
         },
