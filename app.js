@@ -104,6 +104,15 @@ class Wss {
         wsc.id = this.index++;
         this.wsc.push(wsc);
     }
+    removeClient(wsc) {
+        for(let [index,val] of this.wsc.entries()) {
+            if(wsc === val ){
+                this.wsc.splice(index, 1);
+                return true;
+            }
+        }
+        return false;
+    }
     BindAction(wsc) {
         wsc.register('updateUser', (data) => {
             wsc.name = data.detail.name;
@@ -115,6 +124,14 @@ class Wss {
         });
         wsc.register('exchangeMsg', (data) => {
             this.broadcast({ ...data, name: wsc.name, avatar: wsc.avatar }, wsc.id);
+        });
+        wsc.event('close', () => {
+            let id = wsc.id;
+            this.removeClient(wsc);
+            this.broadcast({
+                action: 'updateUserList',
+                detail: this.userList()
+            }, id);
         });
     }
 }

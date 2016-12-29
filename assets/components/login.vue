@@ -21,6 +21,7 @@
     import avatar from 'data/avatar';
     import icon from 'components/utility/icon';
     import { mapActions, mapGetters } from 'vuex';
+    import Notify from 'modules/notify';
     export default {
         data() {
             return {
@@ -91,7 +92,10 @@
                             }
                 };
                 this.getUser.ws.send(data);
-                this.userAct(data.detail);
+                setTimeout(() => {
+                    this.userAct(data.detail);
+                    Notify.getPermission();
+                }, 500);
             }
         },
         mounted() {

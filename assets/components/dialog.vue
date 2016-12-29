@@ -4,7 +4,7 @@
             <message-list :listData='msgList'></message-list>
         </div>
         <div class="input-box">
-            <div class="input-contain">
+            <div class="input-contain" @click="focusEditor">
                 <scroll ref="scroll">
                     <div contenteditable="true" @input="updateInput($event)" @blur="saveTheCaret($event)">
                     </div>
@@ -26,6 +26,7 @@
     import icon from 'components/utility/icon';
     import waveBtn from 'components/utility/button';
     import emoticon from 'components/emoticon';
+    import Notify from 'modules/notify';
     import { mapActions, mapGetters } from 'vuex';
     import { getCaretPosition } from 'modules/util';
     export default {
@@ -99,12 +100,16 @@
                     this.contentHeight = event.target.clientHeight;
                     this.$refs.scroll.updateStyle();
                 }
+            },
+            focusEditor() {
+                this.editHander.focus();
             }
         },
         mounted(){
             this.editHander = this.$el.querySelector('div[contenteditable]');
             this.$nextTick(() => {
                 this.getUser.ws.register('exchangeMsg', (data) => {
+                    Notify.send(data.owner, data.detail);
                     this.msgList.push(data);
                 })
             });

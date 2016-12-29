@@ -31,7 +31,7 @@ class WS {
         this.event('message', (res) => {
             let data = JSON.parse(res.data || res);
             this.dealMsgHandlers(data);
-        })
+        });
     }
     register(action, func) {
         this.msgHandlers.push({

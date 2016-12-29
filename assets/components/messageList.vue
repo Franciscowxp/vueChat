@@ -73,12 +73,13 @@
         }
         p {
             border-radius: 2px;
-            flex: 1 1 auto;
+            flex: 0 1 auto;
             &:nth-of-type(2) {
                 margin-top:10px;
                 padding:10px;
                 display: inline-block;
                 background: #00aeef;
+                text-align:left;
             }
         }
         &.owner {
@@ -93,6 +94,7 @@
                 text-align:right;
                 p {
                     &:first-child {
+                        justify-content:flex-end;
                         time {
                             margin-left:0px;
                             margin-right:10px;
@@ -110,15 +112,16 @@
         }
     }
     .msgContent {
-        flex: 0 0 auto;
+        flex: 0 1 auto;
         margin-left:10px;
         text-align:left;
         order:2;
         p {
+            word-break: break-all;
             &:first-child {
                 display:flex;
                 flex-flow:row nowrap;
-                justify-content:space-between;
+                justify-content:flex-start;
                 align-items:stretch;
                 span,time {
                     flex: 0 0 auto;
