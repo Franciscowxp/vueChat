@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import Koa from 'koa';
 import koaRouter from 'koa-router';
 import koaViews from 'koa-views';
@@ -10,18 +11,16 @@ import path from 'path';
 
 const app = new Koa();
 const router = koaRouter();
-const viewConf = koaViews(__dirname + '/assets', {
+const viewConf = koaViews(path.join(__dirname, 'assets', 'dist'), {
     map: {
         html: 'nunjucks'
     }
 });
 
-const staticConf = koaStatic(__dirname + '/assets/dist');
+const staticConf = koaStatic(__dirname);
 
 router.get('/', async(ctx, next) => {
-    await ctx.render('index', {
-        now: new Date()
-    });
+    await ctx.render('index.html');
 });
 
 

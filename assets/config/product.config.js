@@ -1,6 +1,7 @@
-var webpack = require('webpack');
-var config = require('./base.config');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+const webpack = require('webpack');
+const config = require('./base.config');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const clone = require('clone');
 const newConfig = clone(config);
 
@@ -41,7 +42,12 @@ newConfig.plugins = (config.plugins || []).concat([
     //     minChunks: 2
     // }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new ExtractTextPlugin('../dist/css/[name].css'),
+    new ExtractTextPlugin('css/[name].css'),
+    new HtmlWebpackPlugin({
+        title: 'vue chat',
+        cache: true,
+        template: './index.ejs'
+    })
     // new webpack.optimize.DedupePlugin()
 
 ]);

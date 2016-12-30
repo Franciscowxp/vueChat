@@ -7,7 +7,7 @@
     export default {
         data() {
             return {
-                baseUrl: '/static/images/sprite/'
+                baseUrl: '/assets/static/images/sprite/'
             };
         },
         props:{
