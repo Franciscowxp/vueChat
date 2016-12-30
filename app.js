@@ -1,4 +1,3 @@
-import "babel-polyfill";
 import Koa from 'koa';
 import koaRouter from 'koa-router';
 import koaViews from 'koa-views';
@@ -11,13 +10,13 @@ import path from 'path';
 
 const app = new Koa();
 const router = koaRouter();
-const viewConf = koaViews(path.join(__dirname, 'assets', 'dist'), {
+const viewConf = koaViews(path.resolve(__dirname, 'assets', 'dist'), {
     map: {
         html: 'nunjucks'
     }
 });
 
-const staticConf = koaStatic(__dirname);
+const staticConf = koaStatic(path.resolve(__dirname));
 
 router.get('/', async(ctx, next) => {
     await ctx.render('index.html');
@@ -33,7 +32,7 @@ app
     .use(router.allowedMethods());
 
 
-const server = app.listen(3000);
+const server = app.listen( process.env.NODE_PORT || 3000, process.env.NODE_IP || 'localhost');
 class Wsc extends WS {
     constructor(ws) {
         super();
