@@ -58,7 +58,7 @@
             ...mapActions(['userAct'])
         },
         mounted() {
-            let wsclient = new Wsc({ url: 'ws:localhost:3000' });
+            let wsclient = new Wsc({ url: 'ws://' + window.location.hostname + ':3000' });
             this.userAct({ws: wsclient});
             wsclient.register('updateUser', (data) => {
                 this.userAct({id: data.detail.id});

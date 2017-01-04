@@ -59,7 +59,7 @@
         },
         methods: {
             createEmojiItem(emoName,emoItem){
-                return `<img class="svgEmoji" src="/static/images/svg/emoticon/${emoName}/${emoItem}.svg" alt="">`;
+                return `<img class="svgEmoji" src="/assets/static/images/svg/emoticon/${emoName}/${emoItem}.svg" alt="">`;
             },
             switchData(item) {
                 this.currentIndex = item.index;

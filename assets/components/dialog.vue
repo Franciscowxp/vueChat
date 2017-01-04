@@ -27,6 +27,7 @@
     import waveBtn from 'components/utility/button';
     import emoticon from 'components/emoticon';
     import Notify from 'modules/notify';
+    import Storage from 'modules/storage';
     import { mapActions, mapGetters } from 'vuex';
     import { getCaretPosition } from 'modules/util';
     export default {
@@ -91,8 +92,10 @@
                 const data = this.msgMaker({
                     detail: this.editHander.innerHTML
                 });
+                const dbData = { ...data, name: this.getUser.name, avatar: this.getUser.avatar};
                 this.getUser.ws.send(data);
-                this.msgList.push({ ...data, name: this.getUser.name, avatar: this.getUser.avatar});
+                this.msgList.push(dbData);
+                this.idb.add('msgList',dbData);
                 this.editHander.innerHTML = '';
             },
             updateInput(event) {
@@ -104,6 +107,23 @@
             focusEditor() {
                 this.editHander.focus();
             }
+        },
+        async beforeCreate() {
+            let objectStore = [{
+                objStore: 'msgList',
+                objStoreType: {keyPath: 'timestamp'},
+                indexes:[
+                    {
+                        indexName: 'timestamp',
+                        key: 'timestamp',
+                        option: { unique: true}
+                    }
+                ]
+            }];
+            this.idb = new Storage({dbName: 'message', objectStore});
+            await this.idb.openDB();
+            let localData = await this.idb.getAll('msgList');
+            this.msgList = localData;
         },
         mounted(){
             this.editHander = this.$el.querySelector('div[contenteditable]');
