@@ -22,7 +22,7 @@ newConfig.module.loaders.push(
     // 编译sass 编译css并自动添加css前缀
     {
         test: /\.scss$/,
-        loader: 'style-loader!css-loader?sourceMap!postcss-loader!sass-loader?sourceMap'
+        loader: 'style-loader!css-loader?sourceMap!sass-loader?sourceMap'
     }
 );
 

@@ -63,15 +63,10 @@ module.exports = {
             // .vue的配置。需要单独出来配置，其实没什么必要--因为我删了也没保错，不过这里就留这把，因为官网文档里是可以有单独的配置的。
             vue: {
                 loaders: {
-                    css: 'style-loader!css-loader!postcss-loader!sass-loader',
+                    css: 'style-loader!css-loader!sass-loader',
                 }
             },
             // 使用postcss 来加载autoprefixer
-            postcss: function() {
-                return [precss, autoprefixer({
-                    browsers: ['last 4 versions']
-                })];
-            },
             // 转化成es5的语法
             // babel: {
             //     presets: ['es2015', 'stage-2'],

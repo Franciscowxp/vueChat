@@ -17,14 +17,14 @@
  */
 
 var ID = function () {
-  // Math.random should be unique because of its seeding algorithm.
-  // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-  // after the decimal.
-  return '_' + Math.random().toString(36).substr(2, 9);
+    // Math.random should be unique because of its seeding algorithm.
+    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+    // after the decimal.
+    return '_' + Math.random().toString(36).substr(2, 9);
 };
 
 class WS {
-    constructor(){
+    constructor() {
         this.msgHandlers = [];
     }
     init() {
@@ -40,18 +40,38 @@ class WS {
         });
     }
     dealMsgHandlers(data) {
-        for (let { action, func } of this.msgHandlers) {
+        for (let {
+                action,
+                func
+            } of this.msgHandlers) {
             if (data.action === action) {
                 func(data);
                 return false;
-            }1
+            }
+            1
         }
     }
-    send(data){
-        this.ws.send(JSON.stringify(data));
+    send(data, callback) {
+        this.waitForConnection( () => {
+            this.ws.send(JSON.stringify(data));
+            if (typeof callback !== 'undefined') {
+                callback();
+            }
+        }, 1000);
     }
-    event(type,func) {
-        if(this.ws.on) {
+    waitForConnection(callback, interval) {
+        if (this.ws.readyState === 1) {
+            callback();
+        } else {
+            var that = this;
+            // optional: implement backoff for interval here  
+            setTimeout(() => {
+                that.waitForConnection(callback, interval);
+            }, interval);
+        }
+    }
+    event(type, func) {
+        if (this.ws.on) {
             this.ws.on(type, (res) => {
                 func(res);
             })
@@ -76,4 +96,7 @@ class Wsc extends WS {
     }
 }
 
-export { Wsc, WS};
+export {
+    Wsc,
+    WS
+};
