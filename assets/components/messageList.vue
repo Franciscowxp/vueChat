@@ -50,7 +50,7 @@
         }
     }
 </script>
-<style lang="sass">
+<style lang="scss">
     .components-messageList {
         height: 100%;
         overflow-x:hidden;

@@ -147,7 +147,7 @@
         }
     }
 </script>
-<style lang="sass">
+<style lang="scss">
     .v-slide-panel {
         vertical-align: middle;
         box-sizing:border-box;

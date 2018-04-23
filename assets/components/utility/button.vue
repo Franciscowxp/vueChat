@@ -43,7 +43,7 @@
         }
     }
 </script>
-<style lang="sass">
+<style lang="scss">
     .component-btn{
         position: relative;
         border:none;

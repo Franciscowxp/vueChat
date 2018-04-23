@@ -32,7 +32,7 @@ app
     .use(router.allowedMethods());
 
 
-const server = app.listen( process.env.NODE_PORT || 3000, process.env.NODE_IP || 'localhost');
+const server = app.listen( process.env.NODE_PORT || 8880, process.env.NODE_IP || 'localhost');
 class Wsc extends WS {
     constructor(ws) {
         super();

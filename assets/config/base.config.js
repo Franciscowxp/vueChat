@@ -66,12 +66,6 @@ module.exports = {
                     css: 'style-loader!css-loader!sass-loader',
                 }
             },
-            // 使用postcss 来加载autoprefixer
-            // 转化成es5的语法
-            // babel: {
-            //     presets: ['es2015', 'stage-2'],
-            //     plugins: ['transform-runtime']
-            // }
         })
     ],
     resolve: {

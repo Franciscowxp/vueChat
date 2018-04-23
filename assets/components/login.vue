@@ -108,7 +108,7 @@
         }
     }
 </script>
-<style lang="sass">
+<style lang="scss">
     .component-login {
         position: fixed;
         left:0;

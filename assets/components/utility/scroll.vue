@@ -191,7 +191,7 @@
         }
     }
 </script>
-<style lang="sass">
+<style lang="scss">
     .components-scroll {
         overflow: hidden;
         position: relative;

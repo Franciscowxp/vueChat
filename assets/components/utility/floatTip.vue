@@ -48,7 +48,7 @@
         }
     }
 </script>
-<style lang="sass">
+<style lang="scss">
     .components-floattip {
         position: absolute;
         background:#2b2c31;

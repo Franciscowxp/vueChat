@@ -78,7 +78,7 @@
         }
     }
 </script>
-<style lang="sass">
+<style lang="scss">
     .component-emoticon {
         background: #28282d;
         width:400px;

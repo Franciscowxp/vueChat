@@ -136,7 +136,7 @@
         }
     }
 </script>
-<style lang="sass">
+<style lang="scss">
     .component-dialog {
         flex:1 1 auto;
         display:flex;

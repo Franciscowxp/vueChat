@@ -15,7 +15,7 @@
         }
     }
 </script>
-<style lang="sass">
+<style lang="scss">
     .ripple {
         position: absolute;
         width: 1px;
